@@ -1,0 +1,20 @@
+type Link {
+  id: String
+  link: String
+  title: String
+  description: String
+  likeCount: Int
+  createdAt: String
+}
+
+input AddLinkInput {
+  link: String!
+}
+
+type Query {
+  getLinks(page: Int, limit: Int): [Link]
+}
+
+type Mutation {
+  addLink(addLinkInput: AddLinkInput): Link
+}

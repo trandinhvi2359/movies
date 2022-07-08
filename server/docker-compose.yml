@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  node:
+    build:
+      context: .
+      dockerfile: ./containers/node/Dockerfile
+    volumes:
+      - .:/opt/app
+      - /opt/app/node_modules
+    networks:
+      - db-network
+    env_file: ./containers/node/env
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db-data:/data/db
+    networks:
+      - db-network
+
+volumes:
+  db-data:
+
+networks:
+  db-network:
+    driver: bridge

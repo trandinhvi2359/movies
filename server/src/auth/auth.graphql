@@ -1,0 +1,9 @@
+scalar Email
+
+type Token {
+  accessToken: String!
+}
+
+type Query {
+  login(username: Email!, password: String!): Token
+}
