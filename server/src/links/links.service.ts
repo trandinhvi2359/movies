@@ -64,7 +64,7 @@ export class LinksService {
     return createdLink.toClient();
   }
 
-  transformCreatedByData(links: Array<Link>): Array<Link> {
+  async transformCreatedByData(links: Array<Link>): Promise<Array<Link>> {
     const createdByIds = links.map((link) => link.createdBy);
     const users = await this.usersService.findByListIds(createdByIds);
     const usersKeyById = keyBy(users, '_id');
