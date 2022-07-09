@@ -64,6 +64,14 @@ export class LinksService {
     return createdLink.toClient();
   }
 
+  transformCreatedByData(links: Array<Link>): Array<Link> {
+    const createdByIds = links.map((link) => link.createdBy);
+    const users = await this.usersService.findByListIds(createdByIds);
+    const usersKeyById = keyBy(users, '_id');
+
+    return links.map((link) => link.toCreatedBy(usersKeyById[link.createdBy]?.email));
+  }
+
   async findAll({ page, limit }): Promise<Link[]> {
     const links = await this.linkModel
       .find()
@@ -74,11 +82,7 @@ export class LinksService {
       })
       .exec();
 
-    const createdByIds = links.map((link) => link.createdBy);
-    const users = await this.usersService.findByListIds(createdByIds);
-    const usersKeyById = keyBy(users, '_id');
-
-    return links.map((link) => link.toCreatedBy(usersKeyById[link.createdBy]?.email));
+    return this.transformCreatedByData(links);
   }
 
   // @Cron(CronExpression.EVERY_MINUTE)
