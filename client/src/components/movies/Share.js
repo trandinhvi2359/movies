@@ -1,6 +1,29 @@
-import { memo } from "react";
+import { memo, useState } from "react";
+import { useMutation } from "react-apollo";
+import PropTypes from "prop-types";
 
-function Share({ isShowShareModel }) {
+import { addLink } from "../../graphql/mutation/link";
+
+function Share({ isShowShareModel, handleSetIsShowShareModel }) {
+  const [link, setLink] = useState(null);
+
+  const [handleAddLink] = useMutation(addLink, {
+    variables: {
+      addLinkInput: {
+        link,
+      },
+    },
+  });
+
+  const handleShareLink = () => {
+    try {
+      handleAddLink();
+      handleSetIsShowShareModel(false);
+    } catch (error) {
+      console.log("[Share a link]", error);
+    }
+  };
+
   return (
     isShowShareModel && (
       <div>
@@ -18,14 +41,17 @@ function Share({ isShowShareModel }) {
                 <input
                   type="text"
                   name="user"
-                  size="50"
+                  size="20"
                   placeholder="Enter link to share"
+                  value={link}
+                  onInput={(e) => setLink(e.target.value)}
                 />
                 <input
                   type="submit"
                   name="share"
                   class="share loginmodal-submit"
                   value="Share"
+                  onClick={handleShareLink}
                 />
               </div>
             </div>
@@ -35,5 +61,10 @@ function Share({ isShowShareModel }) {
     )
   );
 }
+
+Share.propTypes = {
+  isShowShareModel: PropTypes.bool.isRequired,
+  handleSetIsShowShareModel: PropTypes.func.isRequired,
+};
 
 export default memo(Share);
