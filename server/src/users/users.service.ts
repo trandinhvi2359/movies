@@ -17,10 +17,10 @@ export class UsersService {
   }
 
   async register(name: string, email: string, password: string): Promise<User> {
-    return new this.userModel({
+    return this.userModel.create({
       name,
       email,
       password,
-    }).save();
+    });
   }
 }

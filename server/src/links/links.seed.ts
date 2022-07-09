@@ -18,6 +18,8 @@ export class LinksSeed {
       description:
         'For more, SUBSCRIBE to CNA INSIDER!  https://cna.asia/insideryoutubesub Follow CNA INSIDER on: Instagram: https://www.instagram.com/cnainsider/ Facebook: https://www.facebook.com/cnainsider/ Website: https://cna.asia/cnainsider',
       likeCount: 40,
+      createdAt: '1657361323078',
+      createdBy: '62c953ab77f4db0f0c804f1b',
     }).save();
   }
 }
