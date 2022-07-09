@@ -29,8 +29,8 @@ export class LinksResolvers {
   @Mutation('addLink')
   @UseGuards(JwtAuthGuard)
   @UseFilters(new HttpExceptionFilter())
-  async create(@Args('addLinkInput') args: AddLinkDto): Promise<Link> {
-    const createdLink = await this.linksService.create(args);
+  async create(@CurrentUser() user: User, @Args('addLinkInput') args: AddLinkDto): Promise<Link> {
+    const createdLink = await this.linksService.create(args, user.id);
     return createdLink;
   }
 }

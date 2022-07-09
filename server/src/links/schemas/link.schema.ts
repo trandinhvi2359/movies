@@ -6,11 +6,23 @@ const LinkSchema = new mongoose.Schema({
   description: String,
   likeCount: Number,
   createdAt: Number,
+  createdBy: String,
 });
+
+LinkSchema.index({ createdBy: 1 });
 
 LinkSchema.method('toClient', function () {
   const object = this.toObject();
 
+  object.id = object._id;
+  delete object._id;
+  return object;
+});
+
+LinkSchema.method('toCreatedBy', function (createdBy) {
+  const object = this.toObject();
+
+  object.createdBy = createdBy;
   object.id = object._id;
   delete object._id;
   return object;

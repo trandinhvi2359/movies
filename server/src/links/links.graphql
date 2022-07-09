@@ -5,6 +5,7 @@ type Link {
   description: String
   likeCount: Int
   createdAt: String
+  createdBy: String
 }
 
 input AddLinkInput {

@@ -1,4 +1,4 @@
-import { Min, Length } from 'class-validator';
+import { Length } from 'class-validator';
 
 import { AddLinkInput } from '../../schema/graphql.schema';
 

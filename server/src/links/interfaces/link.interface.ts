@@ -6,6 +6,8 @@ export interface Link extends Document {
   readonly description: string;
   readonly likeCount: number;
   readonly createdAt: string;
+  readonly createdBy: string;
 
   toClient(): this;
+  toCreatedBy(createdBy): this;
 }

@@ -7,6 +7,8 @@ const UserSchema = new mongoose.Schema({
   password: String,
 });
 
+UserSchema.index({ email: 1 });
+
 UserSchema.method('toClient', function () {
   const object = this.toObject();
   object.id = object._id;

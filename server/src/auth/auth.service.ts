@@ -30,4 +30,8 @@ export class AuthService {
       return false;
     }
   }
+
+  async register({ name, email, password }) {
+    return this.usersService.register(name, email, password);
+  }
 }

@@ -1,9 +1,25 @@
 scalar Email
 
+type User {
+  id: String
+  name: String
+  email: String
+}
+
 type Token {
   accessToken: String!
 }
 
 type Query {
   login(username: Email!, password: String!): Token
+}
+
+input RegisterInput {
+  name: String!
+  username: Email!
+  password: String!
+}
+
+type Mutation {
+  register(registerInput: RegisterInput): User
 }

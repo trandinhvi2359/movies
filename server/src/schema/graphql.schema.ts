@@ -6,8 +6,20 @@
 
 /* tslint:disable */
 /* eslint-disable */
+export class RegisterInput {
+    name: string;
+    username: Email;
+    password: string;
+}
+
 export class AddLinkInput {
     link: string;
+}
+
+export class User {
+    id?: string;
+    name?: string;
+    email?: string;
 }
 
 export class Token {
@@ -20,6 +32,12 @@ export abstract class IQuery {
     abstract getLinks(page?: number, limit?: number): Link[] | Promise<Link[]>;
 }
 
+export abstract class IMutation {
+    abstract register(registerInput?: RegisterInput): User | Promise<User>;
+
+    abstract addLink(addLinkInput?: AddLinkInput): Link | Promise<Link>;
+}
+
 export class Link {
     id?: string;
     link?: string;
@@ -27,10 +45,7 @@ export class Link {
     description?: string;
     likeCount?: number;
     createdAt?: string;
-}
-
-export abstract class IMutation {
-    abstract addLink(addLinkInput?: AddLinkInput): Link | Promise<Link>;
+    createdBy?: string;
 }
 
 export type Email = any;

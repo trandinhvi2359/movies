@@ -11,4 +11,16 @@ export class UsersService {
   async findOneByEmail(email: string): Promise<User> {
     return this.userModel.findOne({ email: email }).exec();
   }
+
+  async findByListIds(ids: Array<string>): Promise<Array<User>> {
+    return this.userModel.find({ _id: ids }).exec();
+  }
+
+  async register(name: string, email: string, password: string): Promise<User> {
+    return new this.userModel({
+      name,
+      email,
+      password,
+    }).save();
+  }
 }
