@@ -5,31 +5,7 @@ import { createMock } from '@golevelup/ts-jest';
 
 import { UsersService } from './users.service';
 import { User } from './interfaces/user.interface';
-
-const mockUser = (name = 'Test', email = 'test@gmail.com', password = '123456789'): any => ({
-  name,
-  email,
-  password,
-});
-
-const mockUserDoc = (mock?: Partial<User>): Partial<User> => ({
-  name: mock?.name || 'Test',
-  _id: mock?._id || 'a uuid',
-  email: mock?.email || 'test@gmail.com',
-  password: mock?.password || '123456789',
-});
-
-const userArray = [mockUser(), mockUser('Vitani', 'abc@gmail.com', '123456789')];
-
-const userDocArray = [
-  mockUserDoc(),
-  mockUserDoc({
-    name: 'Vitani',
-    _id: 'a new uuid',
-    email: 'test@gmail.com',
-    password: '123456789',
-  }),
-];
+import { mockUser, mockUserDoc, userArray, userDocArray } from '../../test/mock/user';
 
 describe('UsersService', () => {
   let service: UsersService;
