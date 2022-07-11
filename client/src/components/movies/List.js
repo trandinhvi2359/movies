@@ -1,42 +1,76 @@
-import React, { memo, useState, useEffect } from "react";
-import Detail from "./Detail";
-// import axios from 'axios';
+import React, { memo, useMemo, useState, useEffect, useCallback } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 
-import { useQuery } from "react-apollo";
+import Detail from "./Detail";
 import { getLinks } from "../../graphql/query/link";
+
+const limit = 2;
 
 function List(props) {
   const [links, setLinks] = useState([]);
-  // const [showLoading, setShowLoading] = useState(true);
-  // const apiUrl = "http://localhost:3000/api/v1/products";
-  //
 
-  const { loading, data, error } = useQuery(getLinks, {
-    variables: { page: 1, limit: 10 },
+  const loadFunction = useCallback((pageToLoadMore) => {
+    console.log("handle load more page: ", pageToLoadMore);
+    handleGetLinks(pageToLoadMore - 1);
   });
 
-  // useEffect(() => {
-  //   const abrefetch();
-  //   // console.log("abc: ", abc);
-  // }, [data]);
+  const accessToken = useMemo(() =>
+    JSON.parse(localStorage.getItem("accessToken"))
+  );
 
-  // console.log("loading: ", loading);
-  // console.log("error: ", error);
+  const handleGetLinks = (page) => {
+    fetch(`${process.env.REACT_APP_BASE_API_URL}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: accessToken ? `Bearer ${accessToken}` : "",
+      },
+      body: JSON.stringify({
+        query: getLinks,
+        variables: {
+          limit,
+          page,
+        },
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        setLinks([...links, ...res.data.getLinks]);
+      });
+  };
 
   useEffect(() => {
-    if (data) {
-      setLinks(data);
-    }
-    console.log("loading: ", loading);
-    console.log("data12121: ", data);
-  }, [data]);
-
-  console.log("data: ", data);
-  console.log("error: ", error);
+    handleGetLinks(0);
+  }, []);
 
   return (
     <div class="container">
-      <Detail title="Test" sharedBy="someone@gmail.com" description="test" />
+      {links && (
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={loadFunction}
+          hasMore={true || false}
+          loader={
+            <div className="loader" key={0}>
+              Loading ...
+            </div>
+          }
+        >
+          {links &&
+            links.map((link) => (
+              <Detail
+                key={link?.id}
+                title={link?.title}
+                sharedBy={link?.createdBy || ""}
+                description={link?.description}
+                link={link?.link}
+                likeCount={link?.likeCount}
+              />
+            ))}
+        </InfiniteScroll>
+      )}
     </div>
   );
 }

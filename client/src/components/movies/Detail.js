@@ -2,21 +2,7 @@ import React, { memo, useState, useEffect } from "react";
 
 import PropTypes from "prop-types";
 
-function Detail({ title, sharedBy, description }) {
-  // const [data, setData] = useState([]);
-  // const [showLoading, setShowLoading] = useState(true);
-  // const apiUrl = "http://localhost:3000/api/v1/products";
-  //
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const result = await axios(apiUrl);
-  //     setData(result.data);
-  //     setShowLoading(false);
-  //   };
-  //
-  //   fetchData();
-  // }, []);
-
+function Detail({ title, sharedBy, description, link, likeCount }) {
   return (
     <div class="card u-clearfix">
       <div class="card-media">
@@ -25,7 +11,7 @@ function Detail({ title, sharedBy, description }) {
           width="420"
           height="345"
           title="test"
-          src="https://www.youtube.com/embed/tgbNymZ7vqY"
+          src={link}
         ></iframe>
         <div class="card-media-preview u-flex-center">
           <svg
@@ -44,7 +30,7 @@ function Detail({ title, sharedBy, description }) {
       <div class="card-body">
         <h2 class="card-body-heading">{title}</h2>
         <div>
-          123 &nbsp;
+          {likeCount} &nbsp;
           <button class="dislike">
             <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
           </button>
@@ -59,7 +45,7 @@ function Detail({ title, sharedBy, description }) {
         </p>
 
         <b>Description:</b>
-        <p>{description}</p>
+        <div dangerouslySetInnerHTML={{ __html: description }} />
       </div>
     </div>
   );
@@ -69,6 +55,8 @@ Detail.propTypes = {
   title: PropTypes.string.isRequired,
   sharedBy: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
+  likeCount: PropTypes.number.isRequired,
 };
 
 export default memo(Detail);
