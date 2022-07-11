@@ -5,7 +5,7 @@ import { createMock } from '@golevelup/ts-jest';
 
 import { UsersService } from './users.service';
 import { User } from './interfaces/user.interface';
-import { mockUser, mockUserDoc, userArray, userDocArray } from '../../test/mock/user';
+import { mockUser, mockUserDoc, userArray, userDocArray } from '../../test/mock';
 
 describe('UsersService', () => {
   let service: UsersService;

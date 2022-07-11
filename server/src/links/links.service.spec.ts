@@ -7,8 +7,7 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 import { LinksService } from './links.service';
 import { UsersService } from '../users/users.service';
 import { Link } from './interfaces/link.interface';
-import { mockLink, mockLinkDoc, linkArray, linkDocArray } from '../../test/mock/link';
-import { mockUserDoc } from '../../test/mock/user';
+import { mockLink, mockLinkDoc, linkArray, linkDocArray, mockUserDoc } from '../../test/mock';
 
 let linkDocArrayData = linkDocArray;
 linkDocArrayData = linkDocArrayData.map((link) => {
@@ -18,7 +17,7 @@ linkDocArrayData = linkDocArrayData.map((link) => {
   return link;
 });
 
-describe('UsersService', () => {
+describe('LinksService', () => {
   let linkService: LinksService;
   let userService: UsersService;
   let i18Service: I18nRequestScopeService;

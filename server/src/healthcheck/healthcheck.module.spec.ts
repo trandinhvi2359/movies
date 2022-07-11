@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import { HealthcheckService } from './healthcheck.service';
 import { HealthcheckController } from './healthcheck.controller';
 
-describe('HealthcheckService', () => {
+describe('HealthcheckModule', () => {
   let healthcheckController: HealthcheckController;
   let healthcheckService: HealthcheckService;
 

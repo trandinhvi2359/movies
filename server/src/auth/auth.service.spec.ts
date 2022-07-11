@@ -47,7 +47,7 @@ describe('AuthService', () => {
     jest.clearAllMocks();
   });
 
-  it('should validate user success', async () => {
+  it('should validate user successfully', async () => {
     const password = '$2b$10$Vhdogiely7wcfMXVHon9i.5P7Vrzgp3I0v4CMeyROwd.k18awwjsW';
     jest.spyOn(userService, 'findOneByEmail').mockReturnValue(
       Promise.resolve({
@@ -65,7 +65,7 @@ describe('AuthService', () => {
     expect(foundUser).toEqual(findMockUser);
   });
 
-  it('should login success', async () => {
+  it('should login successfully', async () => {
     const accessToken =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiVXNlciAxIiwiZW1haWwiOiJuZXN0anMxQGRlbW8uY29tIiwiX192IjowLCJpZCI6IjYwNjEzOTEyMjY2YjJhM2E4ZDJjODcwOSIsImlhdCI6MTY1NzMzNjk0NiwiZXhwIjoxNjU3NDIzMzQ2fQ.mTI4hW62lvG4bUc3Gvz8OYibN3XYXha6Ilnrv2QCYcw';
     jest.spyOn(jwtService, 'sign').mockReturnValue(accessToken);
@@ -83,7 +83,7 @@ describe('AuthService', () => {
     expect(verifyTokenResult).toEqual({});
   });
 
-  it('should register success', async () => {
+  it('should register successfully', async () => {
     const user = mockUserDoc();
     jest.spyOn(userService, 'register').mockReturnValue(
       Promise.resolve({
