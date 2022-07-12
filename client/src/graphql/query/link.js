@@ -8,6 +8,8 @@ export const getLinks = `
         title
         description
         likeCount
+        createdAt
+        createdBy
       }
     }
   }

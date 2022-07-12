@@ -18,8 +18,8 @@ function Header() {
   return (
     <header>
       <div class="div-container">
-        <h1>
-          <i class="fa fa-home"></i> Funny movies
+        <h1 onClick={() => window.location.reload()}>
+          <i class="fa fa-home"></i> Funny Movies
         </h1>
         <nav>
           <ul>

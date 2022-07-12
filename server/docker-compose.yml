@@ -12,17 +12,15 @@ services:
       - db-network
     env_file: ./containers/node/env
     ports:
-      - 8080:8080
+      - 5161:5161
     depends_on:
-      - postgres
+      - mongodb
 
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+  mongodb:
+    image: mongo
+    restart: always
     ports:
-      - '5432:5432'
+      - '27017:27017'
     volumes:
       - db-data:/data/db
     networks:

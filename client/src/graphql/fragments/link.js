@@ -6,6 +6,8 @@ export const linkFields = gql`
     link
     title
     description
+    likeCount
     createdAt
+    createdBy
   }
 `;

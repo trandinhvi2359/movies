@@ -98,7 +98,7 @@ export class LinksService {
     console.log('This is cronjob to sync outdated data');
     try {
       const numberOrItem = 100;
-      let count = await this.linkModel.count({}).exec();
+      const count = await this.linkModel.count({}).exec();
       let offset = 0;
 
       while (offset < count) {

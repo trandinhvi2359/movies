@@ -59,7 +59,7 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-With the server running, visit http://localhost:3000/graphql
+With the server running, visit http://localhost:5161/graphql
 
 ## License
 
