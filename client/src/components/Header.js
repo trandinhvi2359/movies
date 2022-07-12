@@ -1,14 +1,20 @@
-import React, { memo, useState, useEffect, useCallback } from "react";
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import Login from "./authentication/Login";
 import Register from "./authentication/Register";
 import Share from "./movies/Share";
+import { ShowHideContext } from "../context/ShowHideProvider";
 
 function Header() {
-  const [isShowLoginModel, setIsShowLoginModel] = useState(false);
-  const [isShowRegisterModel, setIsShowRegisterModel] = useState(false);
   const [isShowShareModel, setIsShowShareModel] = useState(false);
   const [user, setUser] = useState(null);
   const [isReload, setIsReload] = useState(false);
+  const { showHideForm, setShowHideForm } = useContext(ShowHideContext);
 
   const parseJwt = useCallback((token) => {
     try {
@@ -42,6 +48,22 @@ function Header() {
     }
   }, [isReload]);
 
+  useEffect(() => {
+    if (
+      !showHideForm.isShowRegisterForm &&
+      !showHideForm.isShowLoginForm &&
+      !showHideForm.isSHowShareForm
+    ) {
+      const accessToken = JSON.parse(localStorage.getItem("accessToken"));
+      const user = parseJwt(accessToken);
+      console.log("user: ", user);
+      if (user) {
+        setUser(user);
+      }
+      window.location.reload();
+    }
+  }, [showHideForm]);
+
   const handleLogout = useCallback(() => {
     localStorage.removeItem("accessToken");
     setUser(null);
@@ -51,16 +73,8 @@ function Header() {
     setIsReload(!isReload);
   });
 
-  const handleSetIsShowLoginModel = useCallback((value) => {
-    setIsShowLoginModel(value);
-  });
-
   const handleSetIsShowShareModel = useCallback((value) => {
     setIsShowShareModel(value);
-  });
-
-  const handleSetIsShowRegisterModel = useCallback((value) => {
-    setIsShowRegisterModel(value);
   });
 
   return (
@@ -75,11 +89,13 @@ function Header() {
             <li>
               <button
                 class="home-button"
-                onClick={() => {
-                  setIsShowShareModel(!isShowShareModel);
-                  setIsShowRegisterModel(false);
-                  setIsShowLoginModel(false);
-                }}
+                onClick={() =>
+                  setShowHideForm({
+                    isShowLoginForm: false,
+                    isShowRegisterForm: false,
+                    isSHowShareForm: !showHideForm.isSHowShareForm,
+                  })
+                }
               >
                 Share a movie
               </button>
@@ -88,11 +104,13 @@ function Header() {
               {!user && (
                 <button
                   class="home-button"
-                  onClick={() => {
-                    setIsShowRegisterModel(!isShowRegisterModel);
-                    setIsShowShareModel(false);
-                    setIsShowLoginModel(false);
-                  }}
+                  onClick={() =>
+                    setShowHideForm({
+                      isShowRegisterForm: true,
+                      isShowLoginForm: false,
+                      isSHowShareForm: false,
+                    })
+                  }
                 >
                   Register
                 </button>
@@ -107,30 +125,18 @@ function Header() {
               ) : (
                 <button
                   class="home-button"
-                  onClick={() => {
-                    setIsShowLoginModel(!isShowLoginModel);
-                    setIsShowShareModel(false);
-                    setIsShowRegisterModel(false);
-                  }}
+                  onClick={() =>
+                    setShowHideForm({
+                      isShowLoginForm: true,
+                      isShowRegisterForm: false,
+                      isSHowShareForm: false,
+                    })
+                  }
                 >
                   Login
                 </button>
               )}
             </li>
-
-            <Login
-              handleSetIsReload={handleSetIsReload}
-              isShowLoginModel={isShowLoginModel}
-              handleSetIsShowLoginModel={handleSetIsShowLoginModel}
-            />
-            <Register
-              isShowRegisterModel={isShowRegisterModel}
-              handleSetIsShowRegisterModel={handleSetIsShowRegisterModel}
-            />
-            <Share
-              handleSetIsShowShareModel={handleSetIsShowShareModel}
-              isShowShareModel={isShowShareModel}
-            />
           </ul>
         </nav>
       </div>

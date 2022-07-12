@@ -1,17 +1,15 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useContext } from "react";
 import { useQuery } from "react-apollo";
 import PropTypes from "prop-types";
 
 import { login } from "../../graphql/query/authentication";
+import { ShowHideContext } from "../../context/ShowHideProvider";
 
-function Login({
-  isShowLoginModel,
-  handleSetIsReload,
-  handleSetIsShowLoginModel,
-}) {
+function Login() {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  const { showHideForm, setShowHideForm } = useContext(ShowHideContext);
 
   useEffect(() => {
     if (accessToken) {
@@ -19,74 +17,65 @@ function Login({
     }
   }, [accessToken]);
 
-  const handleLogin = async () => {
-    await refetch();
-    if (data?.login?.accessToken) {
-      setAccessToken(data.login.accessToken);
-    }
-    handleSetIsReload();
-    handleSetIsShowLoginModel(false);
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    fetch(`${process.env.REACT_APP_BASE_API_URL}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: login,
+        variables: {
+          username: email,
+          password,
+        },
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        if (res?.data?.login?.accessToken) {
+          console.log("data.login.accessToken: ", res.data.login.accessToken);
+          setAccessToken(res.data.login.accessToken);
+        }
+        setShowHideForm({
+          isShowRegisterForm: false,
+          isShowLoginForm: false,
+          isSHowShareForm: false,
+        });
+      });
   };
 
-  const { data, refetch } = useQuery(
-    login,
-    {
-      variables: {
-        username: email,
-        password,
-      },
-    },
-    { enabled: false }
-  );
-
   return (
-    isShowLoginModel && (
-      <div>
-        <div
-          class="modal fade"
-          id="login-modal"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="myModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog">
-            <div class="loginmodal-container">
-              <div>
-                <input
-                  type="text"
-                  name="user"
-                  value={email}
-                  placeholder="Email"
-                  onInput={(e) => setEmail(e.target.value)}
-                />
-                <input
-                  type="password"
-                  name="pass"
-                  value={password}
-                  placeholder="Password"
-                  onInput={(e) => setPassword(e.target.value)}
-                />
-                <input
-                  type="submit"
-                  name="login"
-                  class="login loginmodal-submit"
-                  value="Login"
-                  onClick={handleLogin}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+    showHideForm.isShowLoginForm && (
+      <div class="login">
+        <form>
+          <label for="chk" aria-hidden="true">
+            Login
+          </label>
+          <input
+            value={email}
+            type="email"
+            name="email"
+            placeholder="Email"
+            required=""
+            onInput={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            name="pswd"
+            placeholder="Password"
+            required=""
+            onInput={(e) => setPassword(e.target.value)}
+            value={password}
+          />
+          <button onClick={handleLogin}>Login</button>
+        </form>
       </div>
     )
   );
 }
-
-Login.propTypes = {
-  isShowLoginModel: PropTypes.bool.isRequired,
-  handleSetIsReload: PropTypes.func.isRequired,
-  handleSetIsShowLoginModel: PropTypes.func.isRequired,
-};
 
 export default memo(Login);

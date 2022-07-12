@@ -1,12 +1,18 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useCallback, useContext } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
 import Detail from "./Detail";
 import { getLinks } from "../../graphql/query/link";
+import Login from "../authentication/Login";
+import Register from "../authentication/Register";
+import Share from "./Share";
+import { ShowHideContext } from "../../context/ShowHideProvider";
 
 const limit = 2;
 
 function List(props) {
+  const { showHideForm, setShowHideForm } = useContext(ShowHideContext);
+
   const [links, setLinks] = useState([]);
   const [hasMore, setHasMore] = useState(true);
 
@@ -42,7 +48,7 @@ function List(props) {
 
   return (
     <div class="container">
-      {links && (
+      {!showHideForm.isSHowShareForm && accessToken && links && (
         <InfiniteScroll
           pageStart={0}
           loadMore={loadFunction}
@@ -65,6 +71,25 @@ function List(props) {
               />
             ))}
         </InfiniteScroll>
+      )}
+
+      {!accessToken && (
+        <center>
+          <div class="main">
+            <input type="checkbox" id="chk" aria-hidden="true" />
+            <Register />
+            <Login />
+          </div>
+        </center>
+      )}
+
+      {showHideForm.isSHowShareForm && (
+        <center>
+          <div class="main">
+            <input type="checkbox" id="chk" aria-hidden="true" />
+            <Share />
+          </div>
+        </center>
       )}
     </div>
   );
