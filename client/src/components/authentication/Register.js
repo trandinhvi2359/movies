@@ -1,6 +1,6 @@
 import { memo, useState, useContext } from "react";
 import { useMutation } from "react-apollo";
-import PropTypes from "prop-types";
+import { useToasts } from "react-toast-notifications";
 
 import { register } from "../../graphql/mutation/authentication";
 import { ShowHideContext } from "../../context/ShowHideProvider";
@@ -10,6 +10,7 @@ function Register() {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const { showHideForm, setShowHideForm } = useContext(ShowHideContext);
+  const { addToast } = useToasts();
 
   const [handleRegister] = useMutation(register, {
     variables: {
@@ -29,8 +30,17 @@ function Register() {
         isShowRegisterForm: false,
         isShowLoginForm: true,
         isSHowShareForm: false,
+        isShowListLink: false,
+      });
+      addToast("Register a new account successfully", {
+        appearance: "success",
+        autoDismiss: true,
       });
     } catch (error) {
+      addToast("Register a new account fail", {
+        appearance: "error",
+        autoDismiss: true,
+      });
       console.log("[Register]", error);
     }
   };

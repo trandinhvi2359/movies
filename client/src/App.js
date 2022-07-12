@@ -1,4 +1,6 @@
 import "../node_modules/font-awesome/css/font-awesome.min.css";
+import { ToastProvider, useToasts } from "react-toast-notifications";
+
 import List from "./components/movies/List";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -8,9 +10,11 @@ function App() {
   return (
     <div className="App">
       <ShowHideProvider>
-        <Header />
-        <List />
-        <Footer />
+        <ToastProvider>
+          <Header />
+          <List />
+          <Footer />
+        </ToastProvider>
       </ShowHideProvider>
     </div>
   );

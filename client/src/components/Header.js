@@ -1,81 +1,19 @@
-import React, {
-  memo,
-  useState,
-  useEffect,
-  useCallback,
-  useContext,
-} from "react";
-import Login from "./authentication/Login";
-import Register from "./authentication/Register";
-import Share from "./movies/Share";
+import React, { memo, useContext } from "react";
 import { ShowHideContext } from "../context/ShowHideProvider";
 
 function Header() {
-  const [isShowShareModel, setIsShowShareModel] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isReload, setIsReload] = useState(false);
   const { showHideForm, setShowHideForm } = useContext(ShowHideContext);
 
-  const parseJwt = useCallback((token) => {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      if (typeof atob === "undefined") {
-        global.atob = function (b64Encoded) {
-          return new Buffer(b64Encoded, "base64").toString("binary");
-        };
-      }
-      return JSON.parse(
-        decodeURIComponent(
-          atob(base64)
-            .split("")
-            .map(function (c) {
-              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-            })
-            .join("")
-        )
-      );
-    } catch {
-      return null;
-    }
-  });
-
-  useEffect(() => {
-    const accessToken = JSON.parse(localStorage.getItem("accessToken"));
-    const user = parseJwt(accessToken);
-    if (user) {
-      setUser(user);
-    }
-  }, [isReload]);
-
-  useEffect(() => {
-    if (
-      !showHideForm.isShowRegisterForm &&
-      !showHideForm.isShowLoginForm &&
-      !showHideForm.isSHowShareForm
-    ) {
-      const accessToken = JSON.parse(localStorage.getItem("accessToken"));
-      const user = parseJwt(accessToken);
-      console.log("user: ", user);
-      if (user) {
-        setUser(user);
-      }
-      window.location.reload();
-    }
-  }, [showHideForm]);
-
-  const handleLogout = useCallback(() => {
+  const handleLogout = () => {
     localStorage.removeItem("accessToken");
-    setUser(null);
-  });
-
-  const handleSetIsReload = useCallback(() => {
-    setIsReload(!isReload);
-  });
-
-  const handleSetIsShowShareModel = useCallback((value) => {
-    setIsShowShareModel(value);
-  });
+    setShowHideForm({
+      isShowLoginForm: true,
+      isShowRegisterForm: false,
+      isSHowShareForm: false,
+      isShowListLink: false,
+      user: null,
+    });
+  };
 
   return (
     <header>
@@ -85,30 +23,41 @@ function Header() {
         </h1>
         <nav>
           <ul>
-            {user && <li>Welcome {user.email}</li>}
-            <li>
-              <button
-                class="home-button"
-                onClick={() =>
-                  setShowHideForm({
-                    isShowLoginForm: false,
-                    isShowRegisterForm: false,
-                    isSHowShareForm: !showHideForm.isSHowShareForm,
-                  })
-                }
-              >
-                Share a movie
-              </button>
-            </li>
-            <li>
-              {!user && (
+            {showHideForm.user && <li>Welcome {showHideForm.user.email}</li>}
+            {showHideForm.user && (
+              <li>
                 <button
                   class="home-button"
                   onClick={() =>
                     setShowHideForm({
-                      isShowRegisterForm: true,
-                      isShowLoginForm: false,
-                      isSHowShareForm: false,
+                      ...showHideForm,
+                      ...{
+                        isShowLoginForm: false,
+                        isShowRegisterForm: false,
+                        isSHowShareForm: !showHideForm.isSHowShareForm,
+                        isShowListLink: showHideForm.isSHowShareForm,
+                      },
+                    })
+                  }
+                >
+                  Share a movie
+                </button>
+              </li>
+            )}
+
+            <li>
+              {!showHideForm.user && (
+                <button
+                  class="home-button"
+                  onClick={() =>
+                    setShowHideForm({
+                      ...showHideForm,
+                      ...{
+                        isShowRegisterForm: true,
+                        isShowLoginForm: false,
+                        isSHowShareForm: false,
+                        isShowListLink: false,
+                      },
                     })
                   }
                 >
@@ -118,7 +67,7 @@ function Header() {
             </li>
 
             <li>
-              {user ? (
+              {showHideForm.user ? (
                 <button class="home-button" onClick={handleLogout}>
                   Logout
                 </button>
@@ -127,9 +76,13 @@ function Header() {
                   class="home-button"
                   onClick={() =>
                     setShowHideForm({
-                      isShowLoginForm: true,
-                      isShowRegisterForm: false,
-                      isSHowShareForm: false,
+                      ...showHideForm,
+                      ...{
+                        isShowLoginForm: true,
+                        isShowRegisterForm: false,
+                        isSHowShareForm: false,
+                        isShowListLink: false,
+                      },
                     })
                   }
                 >

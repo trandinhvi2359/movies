@@ -1,6 +1,5 @@
 import { memo, useState, useEffect, useContext } from "react";
-import { useQuery } from "react-apollo";
-import PropTypes from "prop-types";
+import { useToasts } from "react-toast-notifications";
 
 import { login } from "../../graphql/query/authentication";
 import { ShowHideContext } from "../../context/ShowHideProvider";
@@ -10,6 +9,7 @@ function Login() {
   const [password, setPassword] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const { showHideForm, setShowHideForm } = useContext(ShowHideContext);
+  const { addToast } = useToasts();
 
   useEffect(() => {
     if (accessToken) {
@@ -41,10 +41,19 @@ function Login() {
           setAccessToken(res.data.login.accessToken);
         }
         setShowHideForm({
-          isShowRegisterForm: false,
-          isShowLoginForm: false,
-          isSHowShareForm: false,
+          ...showHideForm,
+          ...{
+            isShowRegisterForm: false,
+            isShowLoginForm: false,
+            isSHowShareForm: false,
+            isShowListLink: true,
+          },
         });
+        addToast("Welcome to movies website", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        window.location.reload();
       });
   };
 

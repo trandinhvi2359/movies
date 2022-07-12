@@ -1,13 +1,15 @@
 import { memo, useState, useContext } from "react";
 import { useMutation } from "react-apollo";
 import PropTypes from "prop-types";
-import { ShowHideContext } from "../../context/ShowHideProvider";
+import { useToasts } from "react-toast-notifications";
 
+import { ShowHideContext } from "../../context/ShowHideProvider";
 import { addLink } from "../../graphql/mutation/link";
 
 function Share() {
   const [link, setLink] = useState(null);
   const { showHideForm } = useContext(ShowHideContext);
+  const { addToast } = useToasts();
 
   const [handleAddLink] = useMutation(addLink, {
     variables: {
@@ -22,7 +24,15 @@ function Share() {
     try {
       handleAddLink();
       setLink("");
+      addToast("Shared a movie successfully", {
+        appearance: "success",
+        autoDismiss: true,
+      });
     } catch (error) {
+      addToast("Shared a movie fail", {
+        appearance: "error",
+        autoDismiss: true,
+      });
       console.log("[Share a movie]", error);
     }
   };

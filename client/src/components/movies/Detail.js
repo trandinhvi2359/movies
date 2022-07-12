@@ -1,8 +1,22 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useMemo } from "react";
 
 import PropTypes from "prop-types";
 
 function Detail({ title, sharedBy, description, link, likeCount }) {
+  const getEmbedYoutubeVideoLink = useMemo(() => {
+    if (!link.includes("watch")) {
+      return link;
+    }
+
+    const urlParams = new URL(link).searchParams;
+    const youtubeId = urlParams.get("v");
+    if (!youtubeId) {
+      return link;
+    }
+
+    return `https://www.youtube.com/embed/${youtubeId}`;
+  }, [link]);
+
   return (
     <div class="card u-clearfix">
       <div class="card-media">
@@ -10,8 +24,8 @@ function Detail({ title, sharedBy, description, link, likeCount }) {
           class="card-media-video"
           width="420"
           height="345"
-          title="test"
-          src={link}
+          title={title}
+          src={getEmbedYoutubeVideoLink}
         ></iframe>
         <div class="card-media-preview u-flex-center">
           <svg

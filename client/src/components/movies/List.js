@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback, useContext } from "react";
+import React, { memo, useState, useContext } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
 import Detail from "./Detail";
@@ -11,7 +11,7 @@ import { ShowHideContext } from "../../context/ShowHideProvider";
 const limit = 2;
 
 function List(props) {
-  const { showHideForm, setShowHideForm } = useContext(ShowHideContext);
+  const { showHideForm } = useContext(ShowHideContext);
 
   const [links, setLinks] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -39,8 +39,6 @@ function List(props) {
         return res.json();
       })
       .then((res) => {
-        console.log("res.data.getLinks: ", res.data.getLinks);
-        console.log("res.data.getLinks.hasMore: ", res.data.getLinks.hasMore);
         setLinks([...links, ...res.data.getLinks.links]);
         setHasMore(res.data.getLinks.hasMore);
       });
@@ -48,7 +46,7 @@ function List(props) {
 
   return (
     <div class="container">
-      {!showHideForm.isSHowShareForm && accessToken && links && (
+      {showHideForm.isShowListLink && links && (
         <InfiniteScroll
           pageStart={0}
           loadMore={loadFunction}
