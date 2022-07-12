@@ -72,17 +72,23 @@ export class LinksService {
     return links.map((link) => link.toCreatedBy(usersKeyById[link.createdBy]?.email));
   }
 
-  async findAll({ page, limit }): Promise<Link[]> {
-    const links = await this.linkModel
-      .find()
-      .skip(limit * page)
-      .limit(limit)
-      .sort({
-        createdAt: 'desc',
-      })
-      .exec();
+  async findAll({ page, limit }): Promise<{ hasMore: boolean; links: Array<Link> }> {
+    const [links, totalCount] = await Promise.all([
+      this.linkModel
+        .find()
+        .skip(limit * (page - 1))
+        .limit(limit)
+        .sort({
+          createdAt: 'desc',
+        })
+        .exec(),
+      this.linkModel.count({}).exec(),
+    ]);
 
-    return this.transformCreatedByData(links);
+    return {
+      hasMore: page * limit < totalCount,
+      links: await this.transformCreatedByData(links),
+    };
   }
 
   // @Cron(CronExpression.EVERY_MINUTE)

@@ -15,13 +15,16 @@ query login ($username: Email!, $password: String!) {
 const getLinksQuery = () => `
 query getLinks($limit: Int, $page: Int){
   getLinks (limit: $limit, page: $page) {
-    id
-    link
-    title
-    description
-    likeCount
-    createdAt
-    createdBy
+    hasMore,
+    links {
+      id
+      link
+      title
+      description
+      likeCount
+      createdAt
+      createdBy
+    }
   }
 }
 `;
@@ -59,7 +62,7 @@ describe('LinksResolvers (e2e)', () => {
           query: getLinksQuery(),
           variables: {
             limit: 10,
-            page: 0,
+            page: 1,
           },
         })
         .expect(200)
@@ -85,12 +88,12 @@ describe('LinksResolvers (e2e)', () => {
           query: getLinksQuery(),
           variables: {
             limit: 10,
-            page: 0,
+            page: 1,
           },
         })
         .set('Authorization', `Bearer ${loginResponse.body.data.login.accessToken}`)
         .expect(200)
-        .expect((res) => expect(res.body.data.getLinks).not.toEqual([]));
+        .expect((res) => expect(res.body.data.getLinks.links).not.toEqual([]));
     });
   });
 

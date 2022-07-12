@@ -29,7 +29,7 @@ export class Token {
 export abstract class IQuery {
     abstract login(username: Email, password: string): Token | Promise<Token>;
 
-    abstract getLinks(page?: number, limit?: number): Link[] | Promise<Link[]>;
+    abstract getLinks(page?: number, limit?: number): GetLinkOutput | Promise<GetLinkOutput>;
 }
 
 export abstract class IMutation {
@@ -46,6 +46,11 @@ export class Link {
     likeCount?: number;
     createdAt?: string;
     createdBy?: string;
+}
+
+export class GetLinkOutput {
+    hasMore?: boolean;
+    links?: Link[];
 }
 
 export type Email = any;

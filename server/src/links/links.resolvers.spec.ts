@@ -16,7 +16,10 @@ describe('LinksResolvers', () => {
         {
           provide: LinksService,
           useFactory: () => ({
-            findAll: jest.fn(() => [mockLink()]),
+            findAll: jest.fn(() => ({
+              hasMore: false,
+              links: [mockLink()],
+            })),
             create: jest.fn((link: AddLinkDto) => mockLink()),
           }),
         },
@@ -34,7 +37,7 @@ describe('LinksResolvers', () => {
     const user = { id: 'a user uuid', name: 'User testing', email: 'user@gmail.com' } as User;
     const link = mockLink();
     const links = await resolver.getLinks(null, 1, 10);
-    expect(links).toEqual([link]);
+    expect(links).toEqual({ hasMore: false, links: [link] });
   });
 
   it('should create a new link successfully', async () => {

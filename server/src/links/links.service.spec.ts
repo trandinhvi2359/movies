@@ -31,11 +31,11 @@ describe('LinksService', () => {
           provide: getModelToken('Link'),
           // notice that only the functions we call from the model are mocked
           useValue: {
-            findAll: jest.fn().mockResolvedValue(linkDocArrayData),
+            findAll: jest.fn().mockResolvedValue({ hasMore: false, links: linkDocArrayData }),
             constructor: jest.fn().mockResolvedValue(mockLink()),
             find: jest.fn(),
             findOne: jest.fn(),
-            update: jest.fn(),
+            count: jest.fn().mockResolvedValue(1),
             create: jest.fn(),
             remove: jest.fn(),
             exec: jest.fn(),
@@ -93,7 +93,7 @@ describe('LinksService', () => {
     expect(getVideoIdResult).toEqual(videoId);
   });
 
-  it('should return user by email', async () => {
+  it('should return list links', async () => {
     jest.spyOn(model, 'find').mockReturnValueOnce(
       createMock<Query<Link>>({
         skip: () => ({
@@ -105,10 +105,15 @@ describe('LinksService', () => {
         }),
       }) as any,
     );
+    jest.spyOn(model, 'count').mockReturnValueOnce(
+      createMock<Query<Link>>({
+        exec: jest.fn().mockResolvedValueOnce(1),
+      }) as any,
+    );
 
     const links = linkDocArrayData;
-    const foundLinks = await linkService.findAll({ page: 0, limit: 10 });
+    const foundLinks = await linkService.findAll({ page: 1, limit: 10 });
 
-    expect(foundLinks).toEqual(links);
+    expect(foundLinks).toEqual({ hasMore: false, links: links });
   });
 });

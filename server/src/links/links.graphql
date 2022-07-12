@@ -12,8 +12,13 @@ input AddLinkInput {
   link: String!
 }
 
+type GetLinkOutput {
+  hasMore: Boolean
+  links: [Link]
+}
+
 type Query {
-  getLinks(page: Int, limit: Int): [Link]
+  getLinks(page: Int, limit: Int): GetLinkOutput
 }
 
 type Mutation {

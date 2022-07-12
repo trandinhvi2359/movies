@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState, useEffect, useCallback } from "react";
+import React, { memo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
 import Detail from "./Detail";
@@ -8,15 +8,11 @@ const limit = 2;
 
 function List(props) {
   const [links, setLinks] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
 
-  const loadFunction = useCallback((pageToLoadMore) => {
-    console.log("handle load more page: ", pageToLoadMore);
-    handleGetLinks(pageToLoadMore - 1);
-  });
+  const loadFunction = (pageToLoadMore) => handleGetLinks(pageToLoadMore);
 
-  const accessToken = useMemo(() =>
-    JSON.parse(localStorage.getItem("accessToken"))
-  );
+  const accessToken = JSON.parse(localStorage.getItem("accessToken"));
 
   const handleGetLinks = (page) => {
     fetch(`${process.env.REACT_APP_BASE_API_URL}/graphql`, {
@@ -37,13 +33,12 @@ function List(props) {
         return res.json();
       })
       .then((res) => {
-        setLinks([...links, ...res.data.getLinks]);
+        console.log("res.data.getLinks: ", res.data.getLinks);
+        console.log("res.data.getLinks.hasMore: ", res.data.getLinks.hasMore);
+        setLinks([...links, ...res.data.getLinks.links]);
+        setHasMore(res.data.getLinks.hasMore);
       });
   };
-
-  useEffect(() => {
-    handleGetLinks(0);
-  }, []);
 
   return (
     <div class="container">
@@ -51,7 +46,7 @@ function List(props) {
         <InfiniteScroll
           pageStart={0}
           loadMore={loadFunction}
-          hasMore={true || false}
+          hasMore={hasMore}
           loader={
             <div className="loader" key={0}>
               Loading ...

@@ -22,7 +22,7 @@ export class LinksResolvers {
     @CurrentUser() user: User,
     @Args('page') page = 1,
     @Args('limit') limit = 10,
-  ): Promise<Array<Link>> {
+  ): Promise<{ hasMore: boolean; links: Array<Link> }> {
     return this.linksService.findAll({ page, limit });
   }
 
